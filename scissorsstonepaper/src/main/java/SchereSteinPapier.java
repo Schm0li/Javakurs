@@ -26,6 +26,9 @@ public class SchereSteinPapier {
         Timer timer = new Timer();
         timer.schedule(scheduler, 0, 10000); //in Spring mit @EnableScheduling
 
+        final Map<String, Integer> time = new HashMap<>();
+        time.put("loseStreak", 0);
+
         Neutron n0;
         Neutron n1;
         Neutron n2;
@@ -109,27 +112,28 @@ public class SchereSteinPapier {
             int number = graph.result(inputs);
             inputs[0] = number;
             inputs[1] = 0;
+            boolean win = false;
             switch(number){
                 case 0:
                     text += "Schere";
                     out.setText("Unentschieden.");
                     statistics.put("draws", statistics.get("draws") + 1);
+                    time.put("loseStreak", time.get("loseStreak") + 1);
                     break;
                 case 1:
                     text += "Stein";
                     out.setText("Computer hat gewonnen.");
                     statistics.put("loses", statistics.get("loses") + 1);
+                    time.put("loseStreak", time.get("loseStreak") + 1);
                     break;
                 default:
                     text += "Papier";
                     out.setText("Spieler hat gewonnen.");
                     statistics.put("wins", statistics.get("wins") + 1);
+                    win = true;
                     break;
             }
-            graph.updateGraph(inputs);
-            in.setText(text);
-            showGraph();
-            view.display(showGraph, true);
+            updateGraph(time, inputs, in, text, win);
         });
 
         stein.addActionListener(e -> {
@@ -137,27 +141,28 @@ public class SchereSteinPapier {
             int number = graph.result(inputs);
             inputs[0] = number;
             inputs[1] = 1;
+            boolean win = false;
             switch(number){
                 case 0:
                     text += "Schere";
                     out.setText("Spieler hat gewonnen.");
                     statistics.put("wins", statistics.get("wins") + 1);
+                    win = true;
                     break;
                 case 1:
                     text += "Stein";
                     out.setText("Unentschieden.");
                     statistics.put("draws", statistics.get("draws") + 1);
+                    time.put("loseStreak", time.get("loseStreak") + 1);
                     break;
                 default:
                     text += "Papier";
                     out.setText("Computer hat gewonnen.");
                     statistics.put("loses", statistics.get("loses") + 1);
+                    time.put("loseStreak", time.get("loseStreak") + 1);
                     break;
             }
-            graph.updateGraph(inputs);
-            in.setText(text);
-            showGraph();
-            view.display(showGraph, true);
+            updateGraph(time, inputs, in, text, win);
         });
 
         papier.addActionListener(e -> {
@@ -165,28 +170,40 @@ public class SchereSteinPapier {
             int number = graph.result(inputs);
             inputs[0] = number;
             inputs[1] = 2;
+            boolean win = false;
             switch(number){
                 case 0:
                     text += "Schere";
                     out.setText("Computer hat gewonnen.");
                     statistics.put("loses", statistics.get("loses") + 1);
+                    time.put("loseStreak", time.get("loseStreak") + 1);
                     break;
                 case 1:
                     text += "Stein";
                     out.setText("Spieler hat gewonnen.");
                     statistics.put("wins", statistics.get("wins") + 1);
+                    win = true;
                     break;
                 default:
                     text += "Papier";
                     out.setText("Unentschieden.");
                     statistics.put("draws", statistics.get("draws") + 1);
+                    time.put("loseStreak", time.get("loseStreak") + 1);
                     break;
             }
-            graph.updateGraph(inputs);
-            in.setText(text);
-            showGraph();
-            view.display(showGraph, true);
+            updateGraph(time, inputs, in, text, win);
         });
+    }
+
+    private static void updateGraph(Map<String, Integer> time, double[] inputs, JTextField in,
+                                    String text, boolean win){
+        if(win){
+            graph.updateGraph(inputs, time.get("loseStreak"));
+            time.put("loseStreak", 0);
+        }
+        in.setText(text);
+        showGraph();
+        view.display(showGraph, true);
     }
 
     private static void showGraph(){

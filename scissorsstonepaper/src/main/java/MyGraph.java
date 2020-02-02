@@ -19,13 +19,13 @@ public class MyGraph {
         return result;
     }
 
-    public void updateGraph(double[] lastPicks){
+    public void updateGraph(double[] lastPicks, int time){
         if(((int) lastPicks[0] + 1) % 3 == (int) lastPicks[1]){
             Set<Neutron> newNodes = new HashSet<>();
             Set<MyEdge> newEdges = new HashSet<>();
 
             for(Neutron neutron : nodes){
-                neutron.update((lastPicks[1] + 1) % 3);
+                neutron.update((lastPicks[1] + 1) % 3, time);
                 newNodes.add(neutron);
 
                 for(MyEdge edge : edges){

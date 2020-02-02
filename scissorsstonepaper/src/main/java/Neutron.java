@@ -40,9 +40,9 @@ public class Neutron {
         return weights;
     }
 
-    public void update(double expected){
+    public void update(double expected, int time){
         for(int i = 0; i < weights.length; i++){
-            weights[i] += weights[i] * (1 / (expected + 1));
+            weights[i] += weights[i] * (1 / ((expected + 1) * (time + 1)));
             if(weights[i] < 0){
                 weights[i] += 3;
             }else if(weights[i] > 3){
